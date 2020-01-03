@@ -1,15 +1,31 @@
+// Copyright 2019 Andy Pan. All rights reserved.
+// Copyright 2017 Joshua J Baker. All rights reserved.
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file.
+
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/xenbo/go_kfk_client/rdkfk"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/panjf2000/gnet"
 )
+
+type msg struct {
+	Topic   string
+	Body    string
+	Version int32
+	Time    int64
+}
 
 var res string
 var resBytes []byte
@@ -23,6 +39,8 @@ type request struct {
 
 type httpServer struct {
 	*gnet.EventServer
+	topics map[string]bool
+	kc     rdkfk.KafkaClient
 }
 
 var errMsg = "Internal Server Error"
@@ -61,20 +79,92 @@ func (hs *httpServer) OnInitComplete(srv gnet.Server) (action gnet.Action) {
 	return
 }
 
-func (hs *httpServer) React(frame []byte, c gnet.Conn) (out []byte, action gnet.Action) {
+func (hs *httpServer) React(c gnet.Conn) (out []byte, action gnet.Action) {
+
+	data := c.ReadFrame()
 	// process the pipeline
 	if c.Context() != nil {
 		// bad thing happened
 		out = errMsgBytes
 		action = gnet.Close
 		return
+	} else if data == nil {
+		// request not ready, yet
+		return
 	}
+
+	i := strings.Index(string(data), "_#__")
+	if i < len(data) {
+		data = data[i+4:]
+	}
+
+	if len(data) > 0 {
+		m := &msg{}
+		json.Unmarshal(data, m)
+		_, ok := hs.topics[m.Topic]
+		if !ok && m.Topic != "" {
+			hs.kc.AddProduceTopic(m.Topic)
+			hs.topics[m.Topic] = true
+		}
+		if m.Topic != "" {
+			hs.kc.SendMsgWithCache(m.Topic, string(out))
+		}
+	}
+
+	fmt.Println("========================\n", string(data), "\n===============================\n")
+
 	// handle the request
 	out = resBytes
 	return
 }
 
+func main() {
+	glc := rdkfk.GlobeCleaner{}
+	glc.SetKafkaAddr("192.168.1.172")
+	glc.Init()
 
+	var port int
+	var multicore bool
+
+	// Example command: go run http.go --port 8080 --multicore true
+	flag.IntVar(&port, "port", 8091, "server port")
+	flag.BoolVar(&multicore, "multicore", true, "multicore")
+	flag.Parse()
+
+	res = "Hello World!\r\n"
+	resBytes = []byte(res)
+
+	gnethttp := new(httpServer)
+	gnethttp.kc.NewProducer()
+	gnethttp.topics = make(map[string]bool)
+
+	hc := new(httpCodec)
+
+	f := func() {
+		time.Sleep(3 * time.Second)
+		url := "http://127.0.0.1:8091"
+		m := &msg{}
+		m.Topic = "testkfk_http"
+		m.Version = 1
+		m.Body = "#asdkljfkdsahjkldsahfjksadhfjksadhfjk_"
+		m.Time = time.Now().Unix()
+		buff, _ := json.Marshal(m)
+
+		payload := strings.NewReader("_#__" + string(buff))
+		req, _ := http.NewRequest("POST", url, payload)
+		req.Header.Add("content-type", "application/x-www-form-urlencoded")
+		resp, _ := http.DefaultClient.Do(req)
+		defer resp.Body.Close()
+		body, _ := ioutil.ReadAll(resp.Body)
+		fmt.Println(string(body))
+	}
+
+	go f()
+
+	// Start serving!
+	log.Fatal(gnet.Serve(gnethttp, fmt.Sprintf("tcp://:%d", port), gnet.WithMulticore(multicore), gnet.WithCodec(hc)))
+
+}
 
 // appendHandle handles the incoming request and appends the response to
 // the provided bytes, which is then returned to the caller.
@@ -112,6 +202,7 @@ func appendResp(b []byte, status, head, body string) []byte {
 // valid request.
 func parseReq(data []byte, req *request) (leftover []byte, err error) {
 	sdata := string(data)
+
 	var i, s int
 	var head string
 	var clen int
@@ -173,23 +264,4 @@ func parseReq(data []byte, req *request) (leftover []byte, err error) {
 	}
 	// not enough data
 	return data, nil
-}
-
-func main() {
-	var port int
-	var multicore bool
-
-	// Example command: go run http.go --port 8080 --multicore=true
-	flag.IntVar(&port, "port", 8080, "server port")
-	flag.BoolVar(&multicore, "multicore", true, "multicore")
-	flag.Parse()
-
-	res = "Hello World!\r\n"
-	resBytes = []byte(res)
-
-	http := new(httpServer)
-	hc := new(httpCodec)
-
-	// Start serving!
-	log.Fatal(gnet.Serve(http, fmt.Sprintf("tcp://:%d", port), gnet.WithMulticore(multicore), gnet.WithCodec(hc)))
 }
