@@ -10,6 +10,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/xenbo/go_kfk_client/rdkfk"
+	"github.com/xenbo/http_post.git/httpServer/parser"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -93,10 +94,10 @@ func (hs *httpServer) React(c gnet.Conn) (out []byte, action gnet.Action) {
 		return
 	}
 
-	i := strings.Index(string(data), "_#__")
-	if i < len(data) {
-		data = data[i+4:]
-	}
+	//i := strings.Index(string(data), "_#__")
+	//if i < len(data) {
+	//	data = data[i+4:]
+	//}
 
 	if len(data) > 0 {
 		m := &msg{}
@@ -201,67 +202,70 @@ func appendResp(b []byte, status, head, body string) []byte {
 // waits for the entire payload to be buffered before returning a
 // valid request.
 func parseReq(data []byte, req *request) (leftover []byte, err error) {
-	sdata := string(data)
-
-	var i, s int
-	var head string
-	var clen int
-	var q = -1
-	// method, path, proto line
-	for ; i < len(sdata); i++ {
-		if sdata[i] == ' ' {
-			req.method = sdata[s:i]
-			for i, s = i+1, i+1; i < len(sdata); i++ {
-				if sdata[i] == '?' && q == -1 {
-					q = i - s
-				} else if sdata[i] == ' ' {
-					if q != -1 {
-						req.path = sdata[s:q]
-						req.query = req.path[q+1 : i]
-					} else {
-						req.path = sdata[s:i]
-					}
-					for i, s = i+1, i+1; i < len(sdata); i++ {
-						if sdata[i] == '\n' && sdata[i-1] == '\r' {
-							req.proto = sdata[s:i]
-							i, s = i+1, i+1
-							break
-						}
-					}
-					break
-				}
-			}
-			break
-		}
-	}
-	if req.proto == "" {
-		return data, fmt.Errorf("malformed request")
-	}
-	head = sdata[:s]
-	for ; i < len(sdata); i++ {
-		if i > 1 && sdata[i] == '\n' && sdata[i-1] == '\r' {
-			line := sdata[s : i-1]
-			s = i + 1
-			if line == "" {
-				req.head = sdata[len(head)+2 : i+1]
-				i++
-				if clen > 0 {
-					if len(sdata[i:]) < clen {
-						break
-					}
-					req.body = sdata[i : i+clen]
-					i += clen
-				}
-				return data[i:], nil
-			}
-			if strings.HasPrefix(line, "Content-Length:") {
-				n, err := strconv.ParseInt(strings.TrimSpace(line[len("Content-Length:"):]), 10, 64)
-				if err == nil {
-					clen = int(n)
-				}
-			}
-		}
-	}
+	//sdata := string(data)
+	//
+	//var i, s int
+	//var head string
+	//var clen int
+	//var q = -1
+	//// method, path, proto line
+	//for ; i < len(sdata); i++ {
+	//	if sdata[i] == ' ' {
+	//		req.method = sdata[s:i]
+	//		for i, s = i+1, i+1; i < len(sdata); i++ {
+	//			if sdata[i] == '?' && q == -1 {
+	//				q = i - s
+	//			} else if sdata[i] == ' ' {
+	//				if q != -1 {
+	//					req.path = sdata[s:q]
+	//					req.query = req.path[q+1 : i]
+	//				} else {
+	//					req.path = sdata[s:i]
+	//				}
+	//				for i, s = i+1, i+1; i < len(sdata); i++ {
+	//					if sdata[i] == '\n' && sdata[i-1] == '\r' {
+	//						req.proto = sdata[s:i]
+	//						i, s = i+1, i+1
+	//						break
+	//					}
+	//				}
+	//				break
+	//			}
+	//		}
+	//		break
+	//	}
+	//}
+	//if req.proto == "" {
+	//	return data, fmt.Errorf("malformed request")
+	//}
+	//head = sdata[:s]
+	//for ; i < len(sdata); i++ {
+	//	if i > 1 && sdata[i] == '\n' && sdata[i-1] == '\r' {
+	//		line := sdata[s : i-1]
+	//		s = i + 1
+	//		if line == "" {
+	//			req.head = sdata[len(head)+2 : i+1]
+	//			i++
+	//			if clen > 0 {
+	//				if len(sdata[i:]) < clen {
+	//					break
+	//				}
+	//				req.body = sdata[i : i+clen]
+	//				i += clen
+	//			}
+	//			return data[i:], nil
+	//		}
+	//		if strings.HasPrefix(line, "Content-Length:") {
+	//			n, err := strconv.ParseInt(strings.TrimSpace(line[len("Content-Length:"):]), 10, 64)
+	//			if err == nil {
+	//				clen = int(n)
+	//			}
+	//		}
+	//	}
+	//}
 	// not enough data
-	return data, nil
+
+	body := parser.GetBodyBMsg(data)
+
+	return []byte(body), nil
 }
