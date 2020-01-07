@@ -69,6 +69,9 @@ func (hc *httpCodec) Decode(c gnet.Conn) ([]byte, error) {
 	} else if len(leftover) == len(buf) {
 		// request not ready, yet
 		return nil, nil
+	} else if err == nil {
+		c.ResetBuffer()
+		return  leftover, err
 	}
 	c.ResetBuffer()
 	return buf, nil
@@ -81,8 +84,10 @@ func (hs *httpServer) OnInitComplete(srv gnet.Server) (action gnet.Action) {
 }
 
 func (hs *httpServer) React(c gnet.Conn) (out []byte, action gnet.Action) {
-
 	data := c.ReadFrame()
+
+	fmt.Println("========================\n", string(data), "\n========================\n")
+
 	// process the pipeline
 	if c.Context() != nil {
 		// bad thing happened
@@ -94,10 +99,6 @@ func (hs *httpServer) React(c gnet.Conn) (out []byte, action gnet.Action) {
 		return
 	}
 
-	//i := strings.Index(string(data), "_#__")
-	//if i < len(data) {
-	//	data = data[i+4:]
-	//}
 
 	if len(data) > 0 {
 		m := &msg{}
@@ -112,7 +113,6 @@ func (hs *httpServer) React(c gnet.Conn) (out []byte, action gnet.Action) {
 		}
 	}
 
-	fmt.Println("========================\n", string(data), "\n===============================\n")
 
 	// handle the request
 	out = resBytes
@@ -158,6 +158,7 @@ func main() {
 		defer resp.Body.Close()
 		body, _ := ioutil.ReadAll(resp.Body)
 		fmt.Println(string(body))
+		return
 	}
 
 	go f()
@@ -265,7 +266,7 @@ func parseReq(data []byte, req *request) (leftover []byte, err error) {
 	//}
 	// not enough data
 
-	body := parser.GetBodyBMsg(data)
+	parser.GetBMsg(data)
 
-	return []byte(body), nil
+	return []byte(parser.GetBodyMsg()), nil
 }

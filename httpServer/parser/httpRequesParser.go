@@ -1,6 +1,8 @@
 package parser
 
+//
 ////#include <iostream>
+//
 //#include <stdio.h>
 //#include <assert.h>
 //#include <stddef.h>
@@ -49,6 +51,7 @@ package parser
 //#ifndef HTTP_MAX_HEADER_SIZE
 //# define HTTP_MAX_HEADER_SIZE (80*1024)
 //#endif
+//
 //
 //typedef struct http_parser http_parser;
 //typedef struct http_parser_settings http_parser_settings;
@@ -306,9 +309,16 @@ package parser
 //
 //    /** PUBLIC **/
 //    void *data; /* A pointer to get hook to the "connection" or "socket" object */
-//    char bodymsg[4096];
-//};
 //
+//    int id;
+//    char header_valuemsg[100][4096];
+//    char header_fieldmsg[100][4096];
+//    char statusmsg[4096];
+//    char urlmsg[4096];
+//    char bodymsg[4096];
+//
+//};
+//http_parser parser1;
 //
 //struct http_parser_settings {
 //    http_cb on_message_begin;
@@ -2855,31 +2865,119 @@ package parser
 //    max_header_size = size;
 //}
 //
+//static int on_status_data(http_parser *p, const char *at, size_t length) {
+//    memset((void *) p->statusmsg, 0, sizeof(p->statusmsg));
+//    memcpy((void *) p->statusmsg, at, length < sizeof(p->statusmsg) - 1 ? length : sizeof(p->statusmsg) - 1);
+//    return 0;
+//}
+//
+//static int on_header_field_data(http_parser *p, const char *at, size_t length) {
+//    memset((void *) p->header_fieldmsg[p->id], 0, sizeof(p->header_fieldmsg[p->id]));
+//    memcpy((void *) p->header_fieldmsg[p->id], at,
+//           length < sizeof(p->header_fieldmsg[p->id]) - 1 ? length : sizeof(p->header_fieldmsg[p->id]) - 1);
+//    return 0;
+//}
+//
+//static int on_header_value_data(http_parser *p, const char *at, size_t length) {
+//    memset((void *) p->header_valuemsg[p->id], 0, sizeof(p->header_valuemsg[p->id]));
+//    memcpy((void *) p->header_valuemsg[p->id], at,
+//           length < sizeof(p->header_valuemsg[p->id]) - 1 ? length : sizeof(p->header_valuemsg[p->id]) - 1);
+//
+//    p->id++;
+//    return 0;
+//}
+//
+//static int on_url_data(http_parser *p, const char *at, size_t length) {
+//    memset((void *) p->urlmsg, 0, sizeof(p->urlmsg));
+//    memcpy((void *) p->urlmsg, at, length < sizeof(p->urlmsg) - 1 ? length : sizeof(p->urlmsg) - 1);
+//    return 0;
+//}
+//
 //static int on_body_data(http_parser *p, const char *at, size_t length) {
 //    memset((void *) p->bodymsg, 0, sizeof(p->bodymsg));
 //    memcpy((void *) p->bodymsg, at, length < sizeof(p->bodymsg) - 1 ? length : sizeof(p->bodymsg) - 1);
 //    return 0;
 //}
 //
+//static int on_info(http_parser *p) {
+//    return 0;
+//}
+//
 //static http_parser_settings settings = {
-////        .on_message_begin = on_info,
-////        .on_headers_complete = on_info,
-////        .on_message_complete = on_info1,
-////        .on_header_field = on_data,
-////        .on_header_value = on_data,
-////        .on_url = on_data,
-////        .on_status = on_data,
-//        .on_body = on_body_data
+//        .on_message_begin = on_info,
+//        .on_url = on_url_data,
+//        .on_status = on_status_data,
+//        .on_header_field = on_header_field_data,
+//        .on_header_value = on_header_value_data,
+//        .on_headers_complete = on_info,
+//        .on_body = on_body_data,
+//        .on_message_complete = on_info,
+//        .on_chunk_header = on_info,
+//        .on_chunk_complete = on_info
 //};
 //
+////type request struct {
+////    proto, method string
+////    path, query   string
+////    head, body    string
+////    remoteAddr    string
+////}
 //
-//const char *GetBody(const char *data, int len) {
+//void
+//GetMsg(const char *data, int len) {
 //
-//    static struct http_parser parser;
-//    http_parser_init(&parser, HTTP_REQUEST);
-//    http_parser_execute(&parser, &settings, data, len);
-//    return parser.bodymsg;
+//    memset(&parser1, 0, sizeof(parser1));
+//    http_parser_init(&parser1, HTTP_REQUEST);
+//    http_parser_execute(&parser1, &settings, data, len);
+//
 //}
+//
+//
+//const char *get_status_code() {
+//    static char code[32] = {0};
+//    sprintf(code, "%d", parser1.status_code);
+//    return code;
+//}
+//
+//const char *get_method() {
+//    return method_strings[parser1.method];
+//}
+//
+//const char *get_filed_value() {
+//    static char str[1024 * 100] = {0};
+//    int i = 0;
+//
+//    i += sprintf(str, "%s", "{");
+//    for (int j = 0; j < parser1.id; ++j) {
+//        i += sprintf(str + i, "%s", "\"");
+//        i += sprintf(str + i, "%s", parser1.header_fieldmsg[j]);
+//        i += sprintf(str + i, "%s", "\"");
+//
+//        i += sprintf(str + i, "%s", ":");
+//
+//        i += sprintf(str + i, "%s", "\"");
+//        i += sprintf(str + i, "%s", parser1.header_valuemsg[j]);
+//        i += sprintf(str + i, "%s", "\"");
+//
+//        i += sprintf(str + i, "%s", ",");
+//    }
+//    sprintf(str + i-1, "%s", "}");
+//
+//    return str;
+//}
+//
+//const char *get_status() {
+//    return parser1.statusmsg;
+//}
+//
+//const char *get_urlmsg() {
+//    return parser1.urlmsg;
+//}
+//
+//const char *get_bodymsg() {
+//    return parser1.bodymsg;
+//}
+//
 //
 //const char *get_string() {
 //    return "POST /joyent/http-parser HTTP/1.1\r\n"
@@ -2895,43 +2993,61 @@ package parser
 //           "Referer: https://github.com/joyent/http-parser\r\n"
 //           "Connection: keep-alive\r\n"
 //           "Transfer-Encoding: chunked\r\n"
-//           "Cache-Control: max-age=0\r\n\r\nb\r\nhello world\r\n0\r\n";
+//           "Cache-Control: max-age=0"
+//           "\r\n\r\nb\r\nhello world\r\n0\r\n";
 //}
 //
-//int test_main() {
-//    //auto s = get_string();
-//    //auto s1 = GetBody(s, strlen(s));
 //
-//   // std::cout << s1 << std::endl;
+//int testmain() {
+//    /*auto s = get_string();
+//    GetMsg(s, strlen(s));
+//
+//
+//   std::cout << get_method() << std::endl;
+//   std::cout << get_filed_value() << std::endl;
+//   std::cout << get_status_code() << std::endl;
+//   std::cout << get_status() << std::endl;
+//   std::cout << get_urlmsg() << std::endl;
+//   std::cout << get_bodymsg() << std::endl;*/
 //
 //    return 0;
 //}
+//
 import "C"
 import (
-	//"fmt"
 	"unsafe"
 )
 
-
-func GetBodyMsg(httpstr string) string {
+func GetMsg(httpstr string) {
 	sb := []byte(httpstr)
 	str := unsafe.Pointer(&sb[0])
-	s := C.GoString(C.GetBody((*C.char)(str), C.int(len(httpstr))))
-	return s
+	C.GetMsg((*C.char)(str), C.int(len(httpstr)))
 }
 
-
-func GetBodyBMsg(mbyte []byte) string {
-
+func GetBMsg(mbyte []byte) {
 	str := unsafe.Pointer(&mbyte[0])
-	s := C.GoString(C.GetBody((*C.char)(str), C.int(len(mbyte))))
-	return s
+	C.giGetMsg((*C.char)(str), C.int(len(mbyte)))
 }
 
-//func main() {
-//	s1 := C.GoString(C.get_string())
-//	s := GetBodyMsg(s1)
-//
-//	fmt.Println(s)
-//	return
-//}
+func GetMethod() string {
+	return C.GoString(C.get_method())
+}
+
+func GetFiledValue() string {
+	return C.GoString(C.get_filed_value())
+}
+
+func GetStatusCode() string {
+	return C.GoString(C.get_status_code())
+}
+
+func GetStatus() string {
+	return C.GoString(C.get_status())
+}
+
+func GetUrlMsg() string {
+	return C.GoString(C.get_urlmsg())
+}
+func GetBodyMsg() string {
+	return C.GoString(C.get_bodymsg())
+}

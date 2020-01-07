@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/httpServer/httpRequesParser.go" line="2933" />
+    <bookmark url="file://$PROJECT_DIR$/httpServer/parser/httpRequesParser.go" line="3053" />
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated />
@@ -13,9 +13,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b33d61d5-e3e4-4101-bf8b-fc5a36fd95b8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/httpServer/httpRequesParser.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/httpServer/httpServer.go" beforeDir="false" afterPath="$PROJECT_DIR$/httpServer/httpServer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/httpServer/parser/httpRequesParser.go" beforeDir="false" afterPath="$PROJECT_DIR$/httpServer/parser/httpRequesParser.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post_http_client/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/post_http_client/main.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,30 +30,79 @@
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/httpServer/httpServer.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="439">
-              <caret line="266" column="16" selection-start-line="266" selection-start-column="16" selection-end-line="266" selection-end-column="16" />
+            <state relative-caret-position="1228">
+              <caret line="266" column="22" lean-forward="true" selection-start-line="266" selection-start-column="22" selection-end-line="266" selection-end-column="22" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/httpServer/httpRequesParser.go">
+        <entry file="file://$USER_HOME$/go/pkg/mod/github.com/panjf2000/gnet@v1.0.0-rc.4/eventloop_unix.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="14" selection-start-column="8" selection-end-column="14" />
+            <state relative-caret-position="291">
+              <caret line="108" selection-start-line="108" selection-end-line="108" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/go/pkg/mod/github.com/panjf2000/gnet@v1.0.0-rc.4/server_unix.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="196">
+              <caret line="69" selection-start-line="69" selection-end-line="69" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/go/pkg/mod/github.com/panjf2000/gnet@v1.0.0-rc.4/reactor_linux.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="30" selection-start-line="30" selection-end-line="30" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/go/pkg/mod/github.com/panjf2000/gnet@v1.0.0-rc.4/connection_unix.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="214">
+              <caret line="132" column="5" lean-forward="true" selection-start-line="132" selection-start-column="5" selection-end-line="132" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/go/pkg/mod/github.com/panjf2000/gnet@v1.0.0-rc.4/ringbuffer/ring_buffer.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="184">
+              <caret line="360" selection-start-line="360" selection-end-line="360" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/httpServer/parser/httpRequesParser.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="496">
+              <caret line="3028" column="6" selection-start-line="3028" selection-start-column="6" selection-end-line="3028" selection-end-column="6" />
               <folding>
-                <element signature="e#109824#109862#0" expanded="true" />
+                <element signature="e#112901#112939#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/post_http_client/main.go">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="267">
+              <caret line="42" column="18" lean-forward="true" selection-start-line="42" selection-start-column="18" selection-end-line="42" selection-end-column="18" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -64,11 +113,6 @@
               <second_editor />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/go.sum">
-          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -82,10 +126,13 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>GetBody</find>
       <find>http_parser</find>
       <find>struct http_parser</find>
+      <find>===============================</find>
       <find>on_body_data</find>
+      <find>GetBody</find>
+      <find>GetMsg</find>
+      <find>parseReq</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="$PROJECT_DIR$/../../go" />
@@ -99,7 +146,9 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/httpServer/httpRequesParser.go" />
+        <option value="$PROJECT_DIR$/httpServer/parser/httpRequesParser.go" />
         <option value="$PROJECT_DIR$/httpServer/httpServer.go" />
+        <option value="$PROJECT_DIR$/post_http_client/main.go" />
       </list>
     </option>
   </component>
@@ -132,6 +181,12 @@
             <path>
               <item name="http_post" type="b2602c69:ProjectViewProjectNode" />
               <item name="http_post" type="462c0819:PsiDirectoryNode" />
+              <item name="httpServer" type="462c0819:PsiDirectoryNode" />
+              <item name="parser" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="http_post" type="b2602c69:ProjectViewProjectNode" />
+              <item name="http_post" type="462c0819:PsiDirectoryNode" />
               <item name="post_http_client" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -154,6 +209,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/httpServer/parser" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -166,7 +226,19 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Go Build.go build httpServer.go">
+    <configuration name="go build httpRequesParser.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="test_http" />
+      <working_directory value="$PROJECT_DIR$" />
+      <envs>
+        <env name="LIBRARY_PATH" value="$PROJECT_DIR$/../kafkaclient/cmake-build-debug" />
+      </envs>
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/httpServer/parser/httpRequesParser.go" />
+      <package value="github.com/xenbo/http_post.git" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
     <configuration name="go build httpServer.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="test_http" />
       <working_directory value="$PROJECT_DIR$" />
@@ -179,9 +251,14 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Go Build.go build httpRequesParser.go" />
+      <item itemvalue="Go Build.go build httpServer.go" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build httpServer.go" />
+        <item itemvalue="Go Build.go build httpRequesParser.go" />
       </list>
     </recent_temporary>
   </component>
@@ -216,14 +293,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="24" width="1920" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" />
       <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" visible="true" weight="0.29" />
+      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.38111112" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -291,22 +369,6 @@
     </state>
     <state width="960" height="528" key="XDebugger.FullValuePopup/0.24.1920.1056@0.24.1920.1056" timestamp="1578054990690" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/httpServer/httpServer.go</url>
-          <line>105</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/httpServer/httpServer.go</url>
-          <line>254</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/go.sum">
       <provider selected="true" editor-type-id="text-editor" />
@@ -322,23 +384,62 @@
     <entry file="file://$PROJECT_DIR$/go.mod">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/post_http_client/main.go">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/httpServer/httpRequesParser.go">
+    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/panjf2000/gnet@v1.0.0-rc.4/server_unix.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="14" selection-start-column="8" selection-end-column="14" />
+        <state relative-caret-position="196">
+          <caret line="69" selection-start-line="69" selection-end-line="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/panjf2000/gnet@v1.0.0-rc.4/reactor_linux.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/panjf2000/gnet@v1.0.0-rc.4/ringbuffer/ring_buffer.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="360" selection-start-line="360" selection-end-line="360" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/panjf2000/gnet@v1.0.0-rc.4/connection_unix.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="132" column="5" lean-forward="true" selection-start-line="132" selection-start-column="5" selection-end-line="132" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/panjf2000/gnet@v1.0.0-rc.4/eventloop_unix.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="291">
+          <caret line="108" selection-start-line="108" selection-end-line="108" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/httpServer/parser/httpRequesParser.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="496">
+          <caret line="3028" column="6" selection-start-line="3028" selection-start-column="6" selection-end-line="3028" selection-end-column="6" />
           <folding>
-            <element signature="e#109824#109862#0" expanded="true" />
+            <element signature="e#112901#112939#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/httpServer/httpServer.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="439">
-          <caret line="266" column="16" selection-start-line="266" selection-start-column="16" selection-end-line="266" selection-end-column="16" />
+        <state relative-caret-position="1228">
+          <caret line="266" column="22" lean-forward="true" selection-start-line="266" selection-start-column="22" selection-end-line="266" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/post_http_client/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="42" column="18" lean-forward="true" selection-start-line="42" selection-start-column="18" selection-end-line="42" selection-end-column="18" />
         </state>
       </provider>
     </entry>
