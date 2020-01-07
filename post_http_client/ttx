@@ -1,0 +1,5 @@
+{"_app":"3123415742","_t":1578383225,"_sign":"","_s":""}
+{"item_code":"000029","page":1,"limit":10}
+url： http://114.67.231.162/api/erp/goods/spec/open/query 
+POST: _app=3123415742&_s=&_sign=0ec0aa0930b346ae2a2f77ba8ec3b335&_t=1578383225&item_code=000029&limit=10&page=1
+{"code":0,"data":[{"bar_code":"黑色|黑色|长|款|高|品牌啊啊啊啊是","catagory":"软件","brand":"YEU/依友软件","item_name":"短袖衬衫","spec_code":"黑色|黑色|长|款|高|品牌啊啊啊啊是","color":"2222","other_prop":"","price":299.0,"article_number":"YEU00002","unit":"件","item_code":"000029"},{"bar_code":"0000200202","catagory":"软件","brand":"YEU/依友软件","item_name":"短袖衬衫","spec_code":"0000200202","color":"黑色","other_prop":"M","price":299.0,"article_number":"YEU00002","unit":"件","item_code":"000029"},{"bar_code":"0000200201","catagory":"软件","brand":"YEU/依友软件","item_name":"短袖衬衫","spec_code":"0000200201","color":"黑色","other_prop":"S","price":299.0,"article_number":"YEU00002","unit":"件","item_code":"000029"},{"bar_code":"0000200102","catagory":"软件","brand":"YEU/依友软件","item_name":"短袖衬衫","spec_code":"0000200102","color":"白色","other_prop":"M","price":299.0,"article_number":"YEU00002","unit":"件","item_code":"000029"}]}

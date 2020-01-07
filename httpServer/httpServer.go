@@ -10,7 +10,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/xenbo/go_kfk_client/rdkfk"
-	"github.com/xenbo/http_post.git/httpServer/parser"
+	"github.com/xenbo/http_post.git/parser"
 	"io/ioutil"
 	"log"
 	"net/http"

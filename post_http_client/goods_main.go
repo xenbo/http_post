@@ -1,11 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	//"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -24,9 +25,15 @@ type System struct {
 }
 
 type Args struct {
-	Key string `json:"keyword"`
-	Page_no   int32 `json:"page_no"`   //1
-	Page_size int32 `json:"page_size"` //20
+
+	//<arg name="spec_code" title="规格编码" type="String"/>
+	//<arg name="item_code" title="商品编码" type="String"/>
+	//<arg name="bar_code" title="条码" type="String"/>
+
+	//Key string `json:"keyword"`
+	Code string `json:"item_code"`
+	Page_no   int32 `json:"page"`   //1
+	Page_size int32 `json:"limit"` //20
 }
 
 func httpPost() {
@@ -38,8 +45,8 @@ func httpPost() {
 	ss.S = ""
 
 	ag := &Args{}
-
-	ag.Key = "围巾"
+	ag.Code = "000029"
+	//ag.Key = "围巾"
 	ag.Page_no = 1
 	ag.Page_size = 10
 
@@ -112,17 +119,27 @@ func httpPost() {
 	}
 
 	strbody := v.Encode()
-	fmt.Println("POST:", strbody)
 
+	url := "http://114.67.231.162/api/erp/goods/spec/open/query"
+	fmt.Println("url：",url,"\nPOST:", strbody)
 
-	url := "http://114.67.231.162/api/erp/item/goods/query"
 	payload :=  strings.NewReader(strbody)
 	req, _ := http.NewRequest("POST", url, payload)
 	req.Header.Add("content-type", "application/x-www-form-urlencoded")
 	resp, _ := http.DefaultClient.Do(req)
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body))
+
+
+	//
+	//body, err := ioutil.ReadAll(resp.Body)
+	//fmt.Println("err:",err)
+
+
+	datab := make([]byte, 30000)
+	r := bufio.NewReader(resp.Body)
+	r.Read(datab)
+
+	fmt.Println(string(datab))
 
 }
 
