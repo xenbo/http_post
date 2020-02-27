@@ -1,4 +1,4 @@
-package main
+package wln
 
 import (
 	"bytes"
@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/xenbo/go_kfk_client/rdkfk"
+	"gitlab.com/eosforce/vbbirdworker/event"
 	"io/ioutil"
 	"net/http"
 	"reflect"
@@ -15,124 +17,8 @@ import (
 	"time"
 )
 
-type System struct {
-	Appkey    string `json:"app_key"`
-	TimeStamp int64  `json:"timestamp"`
-	Sign      string `json:"sign"`
-	Format    string `json:"format"`
-}
-
-type Args struct {
-	ModifyTime string `json:"modify_time"`
-	Page_no    int32  `json:"page"`  //1
-	Page_size  int32  `json:"limit"` //20
-}
-
-type Args2 struct {
-	ModifyTime string `json:"modify_time"`
-	Page_no    int32  `json:"page"`  //1
-	Page_size  int32  `json:"limit"` //20
-	BillType   int32  `json:"bill_type"`
-}
-
-type Msg interface {
-	name() string
-	RequestData(int32, string, string, string)
-}
-
-//---------------------------------------------
-type StockDetails struct {
-	DetailId string  `json:"detail_id"`
-	SkuNo    string  `json:"sku_no"`
-	Size     float64 `json:"size"`
-	SnValue  string  `json:"sn_value"`
-}
-
-type StockResponse struct {
-	//销售出库单接
-	ExpressCode bool           `json:"express_code"`
-	Express     string         `json:"express"`
-	CustomCode  string         `json:"custom_code"`
-	CustomNick  string         `json:"custom_nick"`
-	CustomName  string         `json:"custom_name"`
-	StorageCode string         `json:"storage_code"`
-	StorageName string         `json:"storage_name"`
-	BillDate    string         `json:"bill_date"`
-	Provice     string         `json:"provice"`
-	City        string         `json:"city"`
-	Company     string         `json:"company"`
-	ShopNick    string         `json:"shop_nick"`
-	Details     []StockDetails `json:"details"`
-}
-
-type StockMsg struct {
-	Success   bool            `json:"success"`
-	ErrorCode string          `json:"error_code"`
-	ErrorMsg  string          `json:"error_msg"`
-	Response  []StockResponse `json:"response"`
-}
-
-func (smsg *StockMsg) name() string {
-	return "stock"
-}
-
-//---------------------------------------------
-
-type PurchaseDetails struct {
-	DetailId string  `json:"detail_id"`
-	SkuNo    string  `json:"sku_no"`
-	Size     float64 `json:"size"`
-	SnValue  string  `json:"sn_value"`
-}
-
-type PurchaseResponse struct {
-	StorageCode string            `json:"storage_code"`
-	StorageName string            `json:"storage_name"`
-	BillDate    string            `json:"bill_date"`
-	Company     string            `json:"company"`
-	Details     []PurchaseDetails `json:"details"`
-}
-
-type PurchaseMsg struct {
-	Success   bool               `json:"success"`
-	ErrorCode string             `json:"error_code"`
-	ErrorMsg  string             `json:"error_msg"`
-	Response  []PurchaseResponse `json:"response"`
-}
-
-func (msg *PurchaseMsg) name() string {
-	return "purchase"
-}
-
-//---------------------------------------------
-
-type inventoryDetails struct {
-	DetailId string  `json:"detail_id"`
-	SkuNo    string  `json:"sku_no"`
-	Size     float64 `json:"size"`
-	SnValue  string  `json:"sn_value"`
-}
-
-type inventoryResponse struct {
-	StorageCode string            `json:"storage_code"`
-	StorageName string            `json:"storage_name"`
-	BillDate    string            `json:"bill_date"`
-	Company     string            `json:"company"`
-	Details     []PurchaseDetails `json:"details"`
-}
-
-type inventoryMsg struct {
-	Success   bool               `json:"success"`
-	ErrorCode string             `json:"error_code"`
-	ErrorMsg  string             `json:"error_msg"`
-	Response  []PurchaseResponse `json:"response"`
-}
-
-func (msg *inventoryMsg) name() string {
-	return "inventory"
-}
-
-//---------------------------------------------
+var Glc rdkfk.GlobeCleaner
+var Kc rdkfk.KafkaClient
 
 func httpPost(ss *System, ag *Args, url string, secret string) string {
 
@@ -310,7 +196,7 @@ func httpPost2(ss *System, ag *Args2, url string, secret string) string {
 	return string(body)
 }
 
-func (data *inventoryMsg) RequestData(pid int32, appkey string, secret string, url string) {
+func (data *InventoryMsg) RequestData(pid int32, appkey string, secret string, url string) {
 
 	ss := &System{}
 	ss.Appkey = appkey
@@ -426,44 +312,54 @@ func (data *PurchaseMsg) RequestData(pid int32, appkey string, secret string, ur
 }
 
 func GetDataLoop(appkey string, secret string, url string, msg Msg) {
+	Kc.AddProduceTopic("bullmsg")
 
-	for i := 0; i < 10000; i++ {
-		msg.RequestData(int32(i), appkey, secret, url)
-		fmt.Print(msg.name(), "   ")
-		fmt.Println(msg)
+	for pi := 0; pi < 1; pi++ {
+		msg.RequestData(int32(pi), appkey, secret, url)
+		ExtStr, _ := json.Marshal(msg)
+		//fmt.Println(msg.name(), "   ", ExtStr)
+
+		RespN := msg.RespN()
+
+		for i := 0; i < RespN; i++ {
+			DetailN := msg.ContainerN(i)
+			for j := 0; j < DetailN; j++ {
+				info0 := event.NodeInfo{ //fachu zhe
+					NodeID:        msg.GetNodeID0(i),
+					NodeRole:      msg.GetNodeRole0(i),
+					NodeActorID:   "", //msg.NodeActorID0(i),
+					NodeActorRole: msg.NodeActorRole0(i),
+				}
+
+				//info1 := event.NodeInfo{
+				//	NodeID:        msg.GetNodeID1(i, j),
+				//	NodeRole:      msg.GetNodeRole1(i, j),
+				//	NodeActorID:   msg.NodeActorID1(i, j),
+				//	NodeActorRole: msg.NodeActorRole1(i, j),
+				//}
+
+				info1 := event.NodeInfo{
+					NodeID:        msg.GetNodeID1(i,j),
+					NodeRole:      "",
+					NodeActorID:   "",
+					NodeActorRole: "",
+				}
+
+				evt, err := event.NewEvent(
+					msg.GetType(), &info0, msg.GetContainerId(i, j), time.Now(),
+					event.WithDatas(event.DataOutbound{
+						ShipNum:     msg.GetExpressId(),
+						Destination: info1, //consumer
+					}),
+					event.WithExtStrInfo(string(ExtStr)),
+					event.WithSubTyp(int(msg.GetType())))
+
+				if err == nil {
+					emsg, _ := json.Marshal(evt)
+					fmt.Println(string(emsg))
+					Kc.SendMsgWithCache("bullmsg", string(emsg))
+				}
+			}
+		}
 	}
 }
-
-func main() {
-	appkey := "QC20201112"
-	secret := "6C646AD3AF383B55A07B659E26F741CC"
-
-	imsg := &inventoryMsg{}
-	//pmsg := &PurchaseMsg{}
-	//smsg := &StockMsg{}
-
-	iurl := "http://114.67.231.99/open/api/v1/agent/reduce/invetory/query"
-	//surl := "http://114.67.231.99/open/api/v1/agent/reduce/stock/query"
-	//purl := "http://114.67.231.99/open/api/v1/agent/reduce/purchase/query"
-
-	go GetDataLoop(appkey, secret, iurl, imsg)
-	//go GetDataLoop(appkey, secret, surl, smsg)
-	//go GetDataLoop(appkey, secret, purl, pmsg)
-
-	time.Sleep(time.Second * 10000)
-}
-
-/*
-
-get data now
-
-while 「
-	get data check database
-		if find it  drop it
-		if not find it save in database send kfk
-
-	if（now_unixno % 60 == 0）
-		check database  1st-20th  timeout del it
-」
-
-*/
