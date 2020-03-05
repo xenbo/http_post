@@ -21,6 +21,8 @@ func main() {
 	surl := "http://114.67.231.99/open/api/v1/agent/reduce/stock/query"
 	purl := "http://114.67.231.99/open/api/v1/agent/reduce/purchase/query"
 
+
+
 	go wln.GetDataLoop(appkey, secret, iurl, &imsg)
 	go wln.GetDataLoop(appkey, secret, surl, &smsg)
 	go wln.GetDataLoop(appkey, secret, purl, &pmsg)

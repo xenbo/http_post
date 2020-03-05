@@ -209,8 +209,11 @@ func (data *InventoryMsg) RequestData(pid int32, appkey string, secret string, u
 	//ag.Page_no = 1
 	//ag.Page_size =1
 
+
+	tm := time.Unix(time.Now().Unix()-2*28*24*3600, 0)
+
 	ag2 := &Args2{}
-	ag2.ModifyTime = "2019-12-01 00:00:00" // time.Now().Format("2006-01-02 15:04:11")  //"2019-12-01 00:00:00"
+	ag2.ModifyTime = tm.Format("2006-01-02 03:04:05") // time.Now().Format("2006-01-02 15:04:11")  //"2019-12-01 00:00:00"
 	ag2.Page_no = pid
 	ag2.Page_size = 1
 	ag2.BillType = 1
@@ -242,8 +245,9 @@ func (data *StockMsg) RequestData(pid int32, appkey string, secret string, url s
 	ss.Sign = ""
 	ss.Format = "json"
 
+	tm := time.Unix(time.Now().Unix()-2*28*24*3600, 0)
 	ag := &Args{}
-	ag.ModifyTime = "2020-02-12 00:00:00" // time.Now().Format("2006-01-02 15:04:11")  //"2019-12-01 00:00:00"
+	ag.ModifyTime = tm.Format("2006-01-02 03:04:05") // time.Now().Format("2006-01-02 15:04:11")  //"2019-12-01 00:00:00"
 	ag.Page_no = pid
 	ag.Page_size = 1
 
@@ -280,8 +284,10 @@ func (data *PurchaseMsg) RequestData(pid int32, appkey string, secret string, ur
 	ss.Sign = ""
 	ss.Format = "json"
 
+	tm := time.Unix(time.Now().Unix()-2*28*24*3600, 0)
+
 	ag := &Args{}
-	ag.ModifyTime = "2019-12-01 00:00:00" // time.Now().Format("2006-01-02 15:04:11")  //"2019-12-01 00:00:00"
+	ag.ModifyTime = tm.Format("2006-01-02 03:04:05") // time.Now().Format("2006-01-02 15:04:11")  //"2019-12-01 00:00:00"
 	ag.Page_no = pid
 	ag.Page_size = 1
 
@@ -317,7 +323,9 @@ func GetDataLoop(appkey string, secret string, url string, msg Msg) {
 	for pi := 0; pi < 1; pi++ {
 		msg.RequestData(int32(pi), appkey, secret, url)
 		ExtStr, _ := json.Marshal(msg)
-		//fmt.Println(msg.name(), "   ", ExtStr)
+		//fmt.Println(msg.name(), "   ", string(ExtStr))
+
+		//check exstr duplicate from leveldb
 
 		RespN := msg.RespN()
 
@@ -345,8 +353,12 @@ func GetDataLoop(appkey string, secret string, url string, msg Msg) {
 					NodeActorRole: "",
 				}
 
+
+
+				billdate, _ := time.ParseInLocation("2006-01-02 15:04:05", msg.GetBillDate(i),time.Local)
+
 				evt, err := event.NewEvent(
-					msg.GetType(), &info0, msg.GetContainerId(i, j), time.Now(),
+					msg.GetType(), &info0, msg.GetContainerId(i, j), billdate,
 					event.WithDatas(event.DataOutbound{
 						ShipNum:     msg.GetExpressId(),
 						Destination: info1, //consumer
@@ -356,10 +368,12 @@ func GetDataLoop(appkey string, secret string, url string, msg Msg) {
 
 				if err == nil {
 					emsg, _ := json.Marshal(evt)
-					fmt.Println(string(emsg))
+					fmt.Println("event:",string(emsg))
 					Kc.SendMsgWithCache("bullmsg", string(emsg))
 				}
-			}
-		}
-	}
+			}//for j
+		}//for i
+
+		//check  Outdated data if true del
+	}//for pi
 }

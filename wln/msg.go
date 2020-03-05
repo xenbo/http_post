@@ -46,6 +46,8 @@ type Msg interface {
 	ContainerN(i int) int
 
 	GetType()  event.EvType
+
+	GetBillDate(int) string
 }
 
 //---------------------------------------------
@@ -144,6 +146,10 @@ func (msg *StockMsg)GetType()event.EvType  {
 	return msg.Tp
 }
 
+func (msg *StockMsg)GetBillDate(i int) string{
+	return msg.Response[i].BillDate
+}
+
 //----------------------------------------------------
 
 type PurchaseDetails struct {
@@ -232,6 +238,9 @@ func (msg *PurchaseMsg)GetType()event.EvType  {
 	return msg.Tp
 }
 
+func (msg *PurchaseMsg)GetBillDate(i int) string{
+	return msg.Response[i].BillDate
+}
 
 //---------------------------------------------
 
@@ -327,5 +336,7 @@ func (msg *InventoryMsg)GetType()event.EvType  {
 	return msg.Tp
 }
 
-
+func (msg *InventoryMsg)GetBillDate(i int) string{
+	return msg.Response[i].BillDate
+}
 //---------------------------------------------
