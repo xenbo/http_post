@@ -2,7 +2,7 @@ package main
 
 
 import "time"
-import "github.com/xenbo/http_post.git/wln"
+import "github.com/xenbo/http_post/wln"
 
 func main() {
 	wln.Glc.SetKafkaAddr("192.168.1.146")

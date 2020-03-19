@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/xenbo/go_kfk_client/rdkfk"
-	"github.com/xenbo/http_post.git/postwln"
+	"github.com/xenbo/http_post/postwln"
 	"gitlab.com/eosforce/vbbirdworker/event"
 	"time"
 )
