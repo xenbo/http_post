@@ -25,7 +25,7 @@ func CreateLog() {
 		os.Exit(1)
 	}
 
-	DLog = log.New(logFile,"[Info]",log.Llongfile)
+	DLog = log.New(logFile, "[Info]", log.Llongfile)
 	DLog.SetOutput(logFile)
 	DLog.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 
@@ -34,3 +34,7 @@ func CreateLog() {
 	//DLog.Printf("Server abort! Cause:%v \n", "test log file"）
 }
 
+func LOGI(v ...interface{}) {
+	funcName, _, line, _ := runtime.Caller(1)
+	DLog.Println(runtime.FuncForPC(funcName).Name(), line, v)
+}
