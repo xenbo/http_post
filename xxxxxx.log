@@ -1,4 +1,0 @@
-[Info]2020/03/20 20:17:42 msg.go:28: <nil>
-[Info]2020/03/20 20:17:42 pullwln_ex2.go:23: {"_app":"3123415742","_t":"1584706662","_sign_kind":"","_sign":"","_s":""}
-[Info]2020/03/20 20:17:42 msg.go:105: <nil>
-[Info]2020/03/20 20:17:42 pullwln_ex2.go:52: {"bill_code":"CD202001060001","modify_time":"","page":1,"limit":100}

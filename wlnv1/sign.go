@@ -1,12 +1,14 @@
 package wlnv1
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	tmap "github.com/liyue201/gostl/ds/map"
 	"github.com/xenbo/http_post/log"
+	"net/url"
 	"reflect"
 	"strings"
 )
@@ -49,20 +51,43 @@ func assign(value interface{}) (string, bool) {
 	case reflect.String:
 		isString = true
 	case reflect.Slice: //TODO...
+
 	case reflect.Map: //TODO...
 		dat := value.(map[string]interface{})
 		tmpValue = "{"
 		for key, value2 := range dat {
-			v, b := assign(value2)
-			if len(v) > 0 {
-				tmpValue += `"` + key + `"` + ":"
-				if b {
-					tmpValue += `"` + v + `"`
-				} else {
-					tmpValue += v
+			log.LOGI(key, ":", value2)
+
+			t2 := reflect.ValueOf(value2).Type()
+			kind2 := t2.Kind()
+
+			if kind2 == reflect.Slice {
+				for _, vSlice := range value2.([]interface{}) {
+					v, b := assign(vSlice)
+					if len(v) > 0 {
+						tmpValue += `"` + key + `"` + ":["
+						if b {
+							tmpValue += `"` + v + `"`
+						} else {
+							tmpValue += v
+						}
+						tmpValue += "],"
+					}
 				}
-				tmpValue += ","
+			} else {
+				v, b := assign(value2)
+
+				if len(v) > 0 {
+					tmpValue += `"` + key + `"` + ":"
+					if b {
+						tmpValue += `"` + v + `"`
+					} else {
+						tmpValue += v
+					}
+					tmpValue += ","
+				}
 			}
+
 		}
 		tmpValue = strings.TrimRight(tmpValue, ",")
 		tmpValue += "}"
@@ -76,13 +101,28 @@ func assign(value interface{}) (string, bool) {
 	return tmpValue, isString
 }
 
-func createmap(bSys []byte, bBusiness []byte) *tmap.Map {
-	var dat map[string]interface{}
-	json.Unmarshal([]byte(string(bBusiness)), &dat)
-	json.Unmarshal([]byte(string(bSys)), &dat)
+func createMap(bSys []byte, bBusiness []byte) *tmap.Map {
+
+	var FromJSON interface{}
+	decoder := json.NewDecoder(bytes.NewReader(bSys))
+	decoder.UseNumber()
+	decoder.Decode(&FromJSON)
+	datSys := FromJSON.(map[string]interface{})
+
+	decoder = json.NewDecoder(bytes.NewReader(bBusiness))
+	//decoder.UseNumber()
+	decoder.Decode(&FromJSON)
+	datBus := FromJSON.(map[string]interface{})
 
 	m := tmap.New(tmap.WithGoroutineSafe())
-	for key, value := range dat {
+	for key, value := range datSys {
+		tmpValue, _ := assign(value)
+		m.Insert(key, tmpValue)
+	}
+
+	for key, value := range datBus {
+		log.LOGI(key, ":", value)
+
 		tmpValue, _ := assign(value)
 		m.Insert(key, tmpValue)
 	}
@@ -95,26 +135,37 @@ func createmap(bSys []byte, bBusiness []byte) *tmap.Map {
 }
 
 func MakeSign(bSys []byte, bBusiness []byte, secret string) string {
-	m := createmap(bSys, bBusiness)
+	m := createMap(bSys, bBusiness)
 
-	i := 0
-	allString := ""
+	//i := 0
+	//allString := ""
+	//for iter := m.First(); iter.IsValid(); iter.Next() {
+	//
+	//	if len(iter.Value().(string)) <= 0 {
+	//		continue
+	//	}
+	//
+	//	if i > 0 {
+	//		allString += "&"
+	//	}
+	//	allString += iter.Key().(string)
+	//	allString += "="
+	//	allString += iter.Value().(string)
+	//	i++
+	//}
+
+	signAllString := url.Values{}
 	for iter := m.First(); iter.IsValid(); iter.Next() {
 
 		if len(iter.Value().(string)) <= 0 {
 			continue
 		}
-
-		if i > 0 {
-			allString += "&"
-		}
-		allString += iter.Key().(string)
-		allString += "="
-		allString += iter.Value().(string)
-		i++
+		signAllString.Add(iter.Key().(string), iter.Value().(string))
 	}
 
-	strSign := secret + allString + secret
+
+
+	strSign := secret + signAllString.Encode() + secret
 	log.DLog.Println("strSign:", strSign)
 	fmt.Println(strSign)
 
@@ -122,8 +173,34 @@ func MakeSign(bSys []byte, bBusiness []byte, secret string) string {
 	md5str := strings.ToUpper(hex.EncodeToString(res[:]))
 	log.DLog.Println("finish sign:", md5str)
 
-	i = 0
-	strBody := ""
+	//i = 0
+	//strBody := ""
+	//for iter := m.First(); iter.IsValid(); iter.Next() {
+	//	isSign := false
+	//	if strings.Count(strings.ToLower(iter.Key().(string)), "sign") > 0 &&
+	//		strings.Count(strings.ToLower(iter.Key().(string)), "kind") == 0 {
+	//		isSign = true
+	//	}
+	//
+	//	if len(iter.Value().(string)) <= 0 && !isSign {
+	//		continue
+	//	}
+	//
+	//	if i > 0 {
+	//		strBody += "&"
+	//	}
+	//	strBody += iter.Key().(string)
+	//	strBody += "="
+	//	if isSign {
+	//		strBody += md5str
+	//	} else {
+	//		strBody += iter.Value().(string)
+	//	}
+	//	i++
+	//}
+
+
+	strBody := url.Values{}
 	for iter := m.First(); iter.IsValid(); iter.Next() {
 		isSign := false
 		if strings.Count(strings.ToLower(iter.Key().(string)), "sign") > 0 &&
@@ -135,21 +212,18 @@ func MakeSign(bSys []byte, bBusiness []byte, secret string) string {
 			continue
 		}
 
-		if i > 0 {
-			strBody += "&"
-		}
-		strBody += iter.Key().(string)
-		strBody += "="
 		if isSign {
-			strBody += md5str
+			strBody.Add(iter.Key().(string), md5str)
 		} else {
-			strBody += iter.Value().(string)
+			strBody.Add(iter.Key().(string), iter.Value().(string))
 		}
-		i++
 	}
-	log.DLog.Println("strBody:", strBody)
-	fmt.Println(strBody)
-	return strBody
+
+	log.DLog.Println("strBody:", strBody.Encode())
+	fmt.Println(strBody.Encode())
+
+
+	return strBody.Encode()
 }
 
 func MakeB2CSign(bSys []byte, bBusiness []byte, secret string) string {
