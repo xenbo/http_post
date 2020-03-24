@@ -195,18 +195,103 @@ func main() {
 	//
 	//	//{"code":1005,"message":"缺少参数 [bill]"}
 	//}
+	//
+	//{
+	//	//_app=3123415742&_s=&_sign=77f2cdd4ee47f096268d3e1462aa5093&_t=1558952035&limit=100&modify_time=1525449600&page=1
+	//
+	//	url = "http://114.67.231.99/api/erp/stock/in/stockbill/query"
+	//	Add := stock.NewInStockBillQuery("", "", "1525449600", 1, 10)
+	//	log.DLog.Println(string(Add))
+	//
+	//	rBody := wln.MakeSign(bSystem, Add, secret)
+	//	hBody := wln.PostData(url, rBody)
+	//	fmt.Println(hBody)
+	//
+	//}
+
+	//
+	//
+	//{
+	//	//_app=3123415742&_s=&_sign=77f2cdd4ee47f096268d3e1462aa5093&_t=1558952035&limit=100&modify_time=1525449600&page=1
+	//
+	//	url = "http://114.67.231.99/api/erp/stock/in/stockbill/query"
+	//	Add := stock.NewOutStockBillQuery("", "", "1525449600", 1, 10)
+	//	log.DLog.Println(string(Add))
+	//
+	//	rBody := wln.MakeSign(bSystem, Add, secret)
+	//	hBody := wln.PostData(url, rBody)
+	//	fmt.Println(hBody)
+	//
+	//}
+
+	//
+	//
+	//{
+	//	//_app=3123415742&_s=&_sign=15eabeff64afaba4fb956020f1d0e1f9&_t=1578553652¬
+	//	// _close_stocked=true&stock_request_code=SO202001090001
+	//
+	//	url = "http://114.67.231.99/api/erp/stock/out/requestbill/close"
+	//	Add := stock.NewOutRequestBillClose("SO202001090001", true)
+	//	log.DLog.Println(string(Add))
+	//
+	//	rBody := wln.MakeSign(bSystem, Add, secret)
+	//	hBody := wln.PostData(url, rBody)
+	//	fmt.Println(hBody)
+	//
+	//}
+
+	//{
+	//	//_app=3123415742&_s=&_sign=3c55593e06a3ca975d0dd2715ab43f39&_t=1578542405&
+	//	// limit=2&modify_time=1525449600000&page=1
+	//
+	//	url = "http://114.67.231.99/api/erp/stock/out/requestbill/query"
+	//
+	//	Add := stock.NewOutRequestBillQuery("","1525449600000",1,2)
+	//	log.DLog.Println(string(Add))
+	//
+	//	rBody := wln.MakeSign(bSystem, Add, secret)
+	//	hBody := wln.PostData(url, rBody)
+	//	fmt.Println(hBody)
+	//
+	//}
 
 	{
-		//_app=3123415742&_s=&_sign=77f2cdd4ee47f096268d3e1462aa5093&_t=1558952035&limit=100&modify_time=1525449600&page=1
 
-		url = "http://114.67.231.99/api/erp/stock/in/stockbill/query"
-		Add := stock.NewInStockBillQuery("", "", "1525449600", 1, 10)
+		//_app=3123415742&_s=&_sign=dbaa38ef02d7f0cc45a50f3fd109891d&_t=1578471870
+		//&limit=100&modify_time=1578385013000&page=1
+
+		url = "http://114.67.231.99/api/erp/allocation/out/changebill/query"
+
+		Add := stock.NewOutChangeBillQuery("", "", "1578385013000", 1, 12)
+		log.DLog.Println(string(Add))
+
+		rBody := wln.MakeSign(bSystem, Add, secret)
+		hBody := wln.PostData(url, rBody)
+		fmt.Println(hBody)
+	}
+
+	//
+
+	{
+
+		//_app=3123415742&_s=&_sign=36404df4ff351b17d2714200302c2ef6&_t=1572920426&
+		// bill={"reason":"其他","storage_code":"A01",
+		// "remark":"#FHTZD001889#自提1、本单金额447.5*97=43407.5USD;\r\n2、07.09客户付款8950USD;\r\n3、07.25客户付款34457.50USD",
+		// "details":[{"spec_code":"0000100102","size":1.0,"sum_money":0.0}]}
+
+		url = "http://114.67.231.99/api/erp/stock/out/stockbill/add"
+
+		var vec []stock.OutStockBillAddBillDetails
+		vec = append(vec, stock.NewOutStockBillAddBillDetails("", 1.0, "0000100102", 0.0))
+
+		Add := stock.NewOutStockBillAdd(vec, "其他", `xxxxxxxxxx`, "A01")
 		log.DLog.Println(string(Add))
 
 		rBody := wln.MakeSign(bSystem, Add, secret)
 		hBody := wln.PostData(url, rBody)
 		fmt.Println(hBody)
 
+		//{"code":1005,"message":"缺少参数 [page]"}
 	}
 
 	//"","","","","","","","","","","","","","","","","","","","","","","","","","","","",
