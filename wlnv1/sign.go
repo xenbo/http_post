@@ -51,6 +51,22 @@ func assign(value interface{}) (string, bool) {
 	case reflect.String:
 		isString = true
 	case reflect.Slice: //TODO...
+		tmpValue = "["
+		for _, vSlice := range value.([]interface{}) {
+			v, b := assign(vSlice)
+			log.LOGI(v)
+
+			if len(v) > 0 {
+				if b {
+					tmpValue += `"` + v + `"`
+				} else {
+					tmpValue += v
+				}
+				tmpValue += ","
+			}
+		}
+		tmpValue = strings.TrimRight(tmpValue, ",")
+		tmpValue += "]"
 
 	case reflect.Map: //TODO...
 		dat := value.(map[string]interface{})
@@ -110,7 +126,7 @@ func createMap(bSys []byte, bBusiness []byte) *tmap.Map {
 	datSys := FromJSON.(map[string]interface{})
 
 	decoder = json.NewDecoder(bytes.NewReader(bBusiness))
-	//decoder.UseNumber()
+	decoder.UseNumber()
 	decoder.Decode(&FromJSON)
 	datBus := FromJSON.(map[string]interface{})
 
@@ -128,7 +144,7 @@ func createMap(bSys []byte, bBusiness []byte) *tmap.Map {
 	}
 
 	for iter := m.First(); iter.IsValid(); iter.Next() {
-		log.LOGI(iter.Key().(string), ":", iter.Value().(string))
+		log.LOGI("key:", iter.Key().(string), ",value:", iter.Value().(string))
 	}
 
 	return m
@@ -162,8 +178,6 @@ func MakeSign(bSys []byte, bBusiness []byte, secret string) string {
 		}
 		signAllString.Add(iter.Key().(string), iter.Value().(string))
 	}
-
-
 
 	strSign := secret + signAllString.Encode() + secret
 	log.DLog.Println("strSign:", strSign)
@@ -199,7 +213,6 @@ func MakeSign(bSys []byte, bBusiness []byte, secret string) string {
 	//	i++
 	//}
 
-
 	strBody := url.Values{}
 	for iter := m.First(); iter.IsValid(); iter.Next() {
 		isSign := false
@@ -221,7 +234,6 @@ func MakeSign(bSys []byte, bBusiness []byte, secret string) string {
 
 	log.DLog.Println("strBody:", strBody.Encode())
 	fmt.Println(strBody.Encode())
-
 
 	return strBody.Encode()
 }
