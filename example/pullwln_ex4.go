@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/xenbo/http_post/log"
 	wln "github.com/xenbo/http_post/wlnv1"
-	"github.com/xenbo/http_post/wlnv1/sale"
+	"github.com/xenbo/http_post/wlnv1/salereturn"
 	"time"
 )
 
@@ -27,7 +27,7 @@ func main() {
 		//_app=3123415742&_s=&_sign=adab07417c15ece3167cf2a4a4c3b9b0&_t=1558951263&
 		// bill_code=SH201905140005&limit=20&page=1
 
-		Add := sale.NewReturnOrderQuery("SH201905140005", "", "", 1, "", 1, 20, "")
+		Add := salereturn.NewReturnOrderQuery("SH201905140005", "", "", 1, "", 1, 20, "")
 		log.DLog.Println(string(Add))
 
 		rBody := wln.MakeSign(bSystem, Add, secret)
@@ -48,9 +48,9 @@ func main() {
 	//	// "storage_code":"00003","bill_code":"33333333333",
 	//	// "details":[{"sku_no":"00001411","nums":2,"sum_sale":43.0}]}
 	//
-	//	var Vec []sale.StockInAddBillDetails
-	//	Vec = append(Vec, sale.NewStockInAddBillDetails(2, "00001411", 43.0))
-	//	Add := sale.NewStockInAdd("1578475359511", "1578475359511", "123", Vec, 0.0, 112.0, 1.0,
+	//	var Vec []salereturn.StockInAddBillDetails
+	//	Vec = append(Vec, salereturn.NewStockInAddBillDetails(2, "00001411", 43.0))
+	//	Add := salereturn.NewStockInAdd("1578475359511", "1578475359511", "123", Vec, 0.0, 112.0, 1.0,
 	//		`#FHTZD001889#自提1、\r\n2、USD`,
 	//		2.0, "bbgillian", "00003", -1.0, )
 	//	log.DLog.Println(string(Add))
@@ -67,7 +67,7 @@ func main() {
 	//	//_app=3123415742&_s=&_sign=0b61a959830600146ad6b88911526b72&_t=1558951263&
 	//	// bill_code=XT190411000003&limit=200&page=1
 	//
-	//	Add := sale.NewStockInQuery("XT190411000003", "", 1, 200, true)
+	//	Add := salereturn.NewStockInQuery("XT190411000003", "", 1, 200, true)
 	//	log.DLog.Println(string(Add))
 	//
 	//	rBody := wln.MakeSign(bSystem, Add, secret)
@@ -81,10 +81,10 @@ func main() {
 		//_app=3123415742&_s=&_sign=c3a09976cfe3740f74521de49a95a28a&_t=1558951263&
 		// bill_code=SH201904280001 &items=[{"size":1,"sku_code":"001"}]&remark=123
 
-		var Vec []sale.OrderStockInItems
-		Vec = append(Vec, sale.NewOrderStockInItems(1, "001"))
+		var Vec []salereturn.OrderStockInItems
+		Vec = append(Vec, salereturn.NewOrderStockInItems(1, "001"))
 
-		Add := sale.NewOrderStockIn("SH201904280001", "123", Vec)
+		Add := salereturn.NewOrderStockIn("SH201904280001", "123", Vec)
 		log.DLog.Println(string(Add))
 
 		rBody := wln.MakeSign(bSystem, Add, secret)
